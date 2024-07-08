@@ -1,29 +1,46 @@
+import { NgModule } from '@angular/core'
+import { BrowserModule } from '@angular/platform-browser'
+import { PivotViewAllModule, PivotFieldListAllModule } from '@syncfusion/ej2-angular-pivotview'
+
+
+
 import { Component } from '@angular/core';
-import { IDataOptions, IDataSet, FieldListService, CalculatedFieldService, GroupingBarService  } from '@syncfusion/ej2-angular-pivotview';
-import { pivot_Data } from './data';
+import { IDataOptions, IDataSet, PivotView, FieldListService, CalculatedFieldService } from '@syncfusion/ej2-angular-pivotview';
+import { Pivot_Data } from './datasource';
 
 @Component({
-  selector: 'app-root',
-  providers: [FieldListService, CalculatedFieldService, GroupingBarService],
-  template: `<div style="height: 480px; margin: 100px "><ejs-pivotview #pivotview id='PivotView' width='100%' height='300' [dataSourceSettings]=dataSourceSettings allowCalculatedField='true' 
-  showGroupingBar='false' showFieldList='true'></ejs-pivotview></div>`
+imports: [
+        
+        PivotViewAllModule,
+        PivotFieldListAllModule
+    ],
+
+
+standalone: true,
+  selector: 'app-container',
+  providers: [FieldListService, CalculatedFieldService],
+  // specifies the template string for the pivot table component
+  template: `<div style="height: 480px;"><ejs-pivotview #pivotview id='PivotView' height='350' [dataSourceSettings]=dataSourceSettings [width]=width allowCalculatedField='true' showFieldList='true'></ejs-pivotview></div>`
 })
 
 export class AppComponent {
-    dataSourceSettings: IDataOptions;
-
+    public dataSourceSettings?: IDataOptions;
+    public width?: string;
     ngOnInit(): void {
         this.dataSourceSettings = {
-            dataSource: pivot_Data as IDataSet[],
-            values: [{name: "Sold", caption:'Unit Sold'}, {name: "Amount", caption:'Sold Amount'}],
-            rows: [{name:"Country"}, {name: 'Products'}],
-            drilledMembers: [{ name: 'Country', items: ['Germany'] }, { name: 'Year', items: ['FY 2016'] } ],
-            columns:[{name: "Year"}, {name:"Quarter"}],
-            formatSettings: [{name: 'Amount', format: 'C2'}],
-            filters :[ {name: "Products"}],
-            filterSettings: [{ name: 'Products', type: 'Include', items: ['Mountain Bikes'] }],
-            sortSettings: [{name:'Country', order:'Descending'}],
-            calculatedFieldSettings: [{ name: "Total", formula: '"Sum(Amount)"+"Sum(Sold)"'}]
+            dataSource: Pivot_Data as IDataSet[],
+            columns: [{ name: 'Date', caption: 'Date' }, { name: 'Product' }],
+            expandAll: false,
+            enableSorting: true,
+            filters: [],
+            drilledMembers: [{ name: 'Country', items: ['France'] }],
+            formatSettings: [{ name: 'Amount', format: 'C0' }],
+            rows: [{ name: 'Country' }, { name: 'State' }],
+            values: [{ name: 'Amount', caption: 'Sold Amount' }, { name: 'Quantity', caption: 'Quantity' }],
+            calculatedFieldSettings: [{ name: 'Total', formula: '"Sum(Amount)"+"Sum(Sold)"' }]
         };
+        this.width = "100%";
     }
 }
+
+
